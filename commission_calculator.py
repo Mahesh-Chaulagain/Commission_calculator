@@ -1,4 +1,6 @@
 from tkinter import *
+import openpyxl
+import os
 
 FONT = ("Arial", "12")
 
@@ -12,6 +14,36 @@ def calculate_commission():
     net_amount = gross - (commission + qty * labor_rate)
     commission_amount.config(text=commission)
     net_sales.config(text=net_amount)
+    save_to_exel(qty, percentage, gross, labor_rate, commission, net_amount)
+
+def save_to_exel(qty, pct, gross, labor, com, net):
+
+    file_path = 'data.xlsx'
+
+    # Check if the file exists
+    if os.path.exists(file_path):
+        # Load the existing workbook
+        wb = openpyxl.load_workbook(file_path)
+        ws = wb.active
+
+    else:
+        # create a new workbook
+        wb = openpyxl.Workbook()
+        ws = wb.active
+
+        # add data to the notebook
+        ws['A1'] = 'Quantity'
+        ws['B1'] = 'Percentage'
+        ws['C1'] = 'Gross'
+        ws['D1'] = 'Labor Rate'
+        ws['E1'] = 'Commission'
+        ws['F1'] = 'Net Amount'
+
+    # Add data to the next empty row
+    ws.append([qty, pct, gross, labor, com, net])
+
+    # Save the workbook
+    wb.save(file_path)
 
 
 def reset():
